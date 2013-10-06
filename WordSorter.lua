@@ -1,23 +1,27 @@
 --ファイル入出力用ハンドルの取得
 f = io.open("scripts.txt", "r")
-out = io.open("output.txt","w")
+out = io.open("output.html","w")
 data = ""
 words = {}
+
 
 header = 1
 footer = 1
 for line in f:lines() do
 	data = line--stringをdataに代入
-
+	strOut = line
 	--表示だけ
 	if data:find("%a+") ~= nil then
 		print(line.."\n")
 		while(data:find("%a+") ~= nil)do
 			
-			
 			header,footer = data:find("%a+")
 			
 			word = data:sub(header,footer)
+			strOutBuffer = strOut:sub(header,strOut:len())
+			strOut = strOut:sub(1, header-1)
+			strOutBuffer = strOutBuffer:gsub(word,"<a href=\"http://ejje.weblio.jp/content/"..word.."\" target=\"_blank\">"..word.."</a>",1)
+			strOut = strOut..strOutBuffer
 			
 			--既出か検索
 			local isNewword = true
@@ -37,14 +41,12 @@ for line in f:lines() do
 						value.num = value.num + 1
 					end
 				end
-				
 			end
 				
 			print(" "..word)
 			data = data:sub(footer+1,data:len())
 		end
-		print(line.."\n\n")
-			
+		print(line.."\n\n")	
 	end
 	--[[
 	while(data:find("%a+") ~= nil) do
@@ -64,6 +66,9 @@ for line in f:lines() do
 		print(data:find("%a+"))
 	end
 	--]]
+	
+	out:write(strOut.."<br>")	
+
 end
 print("\nSortedWords\n")
 
